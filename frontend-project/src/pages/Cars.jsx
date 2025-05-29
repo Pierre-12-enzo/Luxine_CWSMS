@@ -111,6 +111,22 @@ const Cars = () => {
     setShowForm(true)
   }
 
+  // Delete car
+  const handleDelete = async (plateNumber) => {
+    if (!confirm('Are you sure you want to delete this car?')) {
+      return
+    }
+
+    try {
+      await axios.delete(`/cars/${plateNumber}`)
+      success('Car deleted successfully')
+      fetchCars()
+    } catch (err) {
+      console.error('Error deleting car:', err)
+      error(err.response?.data?.message || 'Failed to delete car')
+    }
+  }
+
   // Filter cars based on search term
   const filteredCars = cars.filter(car =>
     car.PlateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -302,6 +318,22 @@ const Cars = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-gray-900">{car.PhoneNumber}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => handleEdit(car)}
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium shadow-md transition-all duration-200"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(car.PlateNumber)}
+                          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium shadow-md transition-all duration-200"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
