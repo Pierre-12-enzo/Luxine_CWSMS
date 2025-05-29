@@ -9,10 +9,10 @@ router.get('/daily/:date', (req, res) => {
   const query = `
     SELECT c.PlateNumber, pkg.PackageName, pkg.PackageDescription,
            p.AmountPaid, p.PaymentDate
-    FROM Payment p
-    JOIN ServicePackage sp ON p.RecordNumber = sp.RecordNumber
-    JOIN Car c ON sp.PlateNumber = c.PlateNumber
-    JOIN Package pkg ON sp.PackageNumber = pkg.PackageNumber
+    FROM payments p
+    JOIN servicePackages sp ON p.RecordNumber = sp.RecordNumber
+    JOIN cars c ON sp.PlateNumber = c.PlateNumber
+    JOIN packages pkg ON sp.PackageNumber = pkg.PackageNumber
     WHERE DATE(p.PaymentDate) = ?
     ORDER BY p.PaymentDate DESC
   `;
@@ -40,10 +40,10 @@ router.get('/payments', (req, res) => {
   const query = `
     SELECT c.PlateNumber, pkg.PackageName, pkg.PackageDescription,
            p.AmountPaid, p.PaymentDate
-    FROM Payment p
-    JOIN ServicePackage sp ON p.RecordNumber = sp.RecordNumber
-    JOIN Car c ON sp.PlateNumber = c.PlateNumber
-    JOIN Package pkg ON sp.PackageNumber = pkg.PackageNumber
+    FROM payments p
+    JOIN servicePackages sp ON p.RecordNumber = sp.RecordNumber
+    JOIN cars c ON sp.PlateNumber = c.PlateNumber
+    JOIN packages pkg ON sp.PackageNumber = pkg.PackageNumber
     ORDER BY p.PaymentDate DESC
   `;
 
@@ -59,10 +59,10 @@ router.get('/payments', (req, res) => {
 
 // Get summary report
 router.get('/summary', (req, res) => {
-  const carCountQuery = 'SELECT COUNT(*) as carCount FROM Car';
-  const serviceCountQuery = 'SELECT COUNT(*) as serviceCount FROM ServicePackage';
-  const paymentSumQuery = 'SELECT SUM(AmountPaid) as totalRevenue FROM Payment';
-  const packageCountQuery = 'SELECT COUNT(*) as packageCount FROM Package';
+  const carCountQuery = 'SELECT COUNT(*) as carCount FROM cars';
+  const serviceCountQuery = 'SELECT COUNT(*) as serviceCount FROM servicePackages';
+  const paymentSumQuery = 'SELECT SUM(AmountPaid) as totalRevenue FROM payments';
+  const packageCountQuery = 'SELECT COUNT(*) as packageCount FROM packages';
 
   db.query(carCountQuery, (err, carResults) => {
     if (err) {

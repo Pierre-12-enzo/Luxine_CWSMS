@@ -4,7 +4,7 @@ const db = require('../db');
 
 // Get all cars
 router.get('/', (req, res) => {
-  const query = 'SELECT * FROM Car';
+  const query = 'SELECT * FROM cars';
 
   db.query(query, (err, results) => {
     if (err) {
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 // Get car by plate number
 router.get('/:plateNumber', (req, res) => {
   const { plateNumber } = req.params;
-  const query = 'SELECT * FROM Car WHERE PlateNumber = ?';
+  const query = 'SELECT * FROM cars WHERE PlateNumber = ?';
 
   db.query(query, [plateNumber], (err, results) => {
     if (err) {
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'INSERT INTO Car (PlateNumber, CarType, CarSize, DriverName, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO cars (PlateNumber, CarType, CarSize, DriverName, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
 
   db.query(query, [plateNumber, carType, carSize, driverName, phoneNumber], (err, result) => {
     if (err) {
@@ -73,7 +73,7 @@ router.put('/:plateNumber', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'UPDATE Car SET CarType = ?, CarSize = ?, DriverName = ?, PhoneNumber = ? WHERE PlateNumber = ?';
+  const query = 'UPDATE cars SET CarType = ?, CarSize = ?, DriverName = ?, PhoneNumber = ? WHERE PlateNumber = ?';
 
   db.query(query, [carType, carSize, driverName, phoneNumber, plateNumber], (err, result) => {
     if (err) {
@@ -101,7 +101,7 @@ router.put('/:plateNumber', (req, res) => {
 // Delete car
 router.delete('/:plateNumber', (req, res) => {
   const { plateNumber } = req.params;
-  const query = 'DELETE FROM Car WHERE PlateNumber = ?';
+  const query = 'DELETE FROM cars WHERE PlateNumber = ?';
 
   db.query(query, [plateNumber], (err, result) => {
     if (err) {

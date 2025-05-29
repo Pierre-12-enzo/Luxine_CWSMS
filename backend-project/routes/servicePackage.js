@@ -7,9 +7,9 @@ router.get('/', (req, res) => {
   const query = `
     SELECT sp.RecordNumber, sp.ServiceDate, c.PlateNumber, c.DriverName, c.CarType, c.CarSize,
            p.PackageNumber, p.PackageName, p.PackageDescription, p.PackagePrice
-    FROM ServicePackage sp
-    JOIN Car c ON sp.PlateNumber = c.PlateNumber
-    JOIN Package p ON sp.PackageNumber = p.PackageNumber
+    FROM servicePackages sp
+    JOIN cars c ON sp.PlateNumber = c.PlateNumber
+    JOIN packages p ON sp.PackageNumber = p.PackageNumber
   `;
 
   db.query(query, (err, results) => {
@@ -28,9 +28,9 @@ router.get('/:id', (req, res) => {
   const query = `
     SELECT sp.RecordNumber, sp.ServiceDate, c.PlateNumber, c.DriverName, c.CarType, c.CarSize,
            p.PackageNumber, p.PackageName, p.PackageDescription, p.PackagePrice
-    FROM ServicePackage sp
-    JOIN Car c ON sp.PlateNumber = c.PlateNumber
-    JOIN Package p ON sp.PackageNumber = p.PackageNumber
+    FROM servicePackages sp
+    JOIN cars c ON sp.PlateNumber = c.PlateNumber
+    JOIN packages p ON sp.PackageNumber = p.PackageNumber
     WHERE sp.RecordNumber = ?
   `;
 
@@ -56,7 +56,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'INSERT INTO ServicePackage (ServiceDate, PlateNumber, PackageNumber) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO servicePackages (ServiceDate, PlateNumber, PackageNumber) VALUES (?, ?, ?)';
 
   db.query(query, [serviceDate, plateNumber, packageNumber], (err, result) => {
     if (err) {
@@ -85,7 +85,7 @@ router.put('/:id', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'UPDATE ServicePackage SET ServiceDate = ?, PlateNumber = ?, PackageNumber = ? WHERE RecordNumber = ?';
+  const query = 'UPDATE servicePackages SET ServiceDate = ?, PlateNumber = ?, PackageNumber = ? WHERE RecordNumber = ?';
 
   db.query(query, [serviceDate, plateNumber, packageNumber, id], (err, result) => {
     if (err) {
@@ -112,7 +112,7 @@ router.put('/:id', (req, res) => {
 // Delete service package
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM ServicePackage WHERE RecordNumber = ?';
+  const query = 'DELETE FROM servicePackages WHERE RecordNumber = ?';
 
   db.query(query, [id], (err, result) => {
     if (err) {

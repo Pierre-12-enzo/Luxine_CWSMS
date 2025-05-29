@@ -4,7 +4,7 @@ const db = require('../db');
 
 // Get all packages
 router.get('/', (req, res) => {
-  const query = 'SELECT * FROM Package';
+  const query = 'SELECT * FROM packages';
 
   db.query(query, (err, results) => {
     if (err) {
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 // Get package by ID
 router.get('/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'SELECT * FROM Package WHERE PackageNumber = ?';
+  const query = 'SELECT * FROM packages WHERE PackageNumber = ?';
 
   db.query(query, [id], (err, results) => {
     if (err) {
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'INSERT INTO Package (PackageName, PackageDescription, PackagePrice) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO packages (PackageName, PackageDescription, PackagePrice) VALUES (?, ?, ?)';
 
   db.query(query, [packageName, packageDescription, packagePrice], (err, result) => {
     if (err) {
@@ -72,7 +72,7 @@ router.put('/:id', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'UPDATE Package SET PackageName = ?, PackageDescription = ?, PackagePrice = ? WHERE PackageNumber = ?';
+  const query = 'UPDATE packages SET PackageName = ?, PackageDescription = ?, PackagePrice = ? WHERE PackageNumber = ?';
 
   db.query(query, [packageName, packageDescription, packagePrice, id], (err, result) => {
     if (err) {
@@ -99,7 +99,7 @@ router.put('/:id', (req, res) => {
 // Delete package
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM Package WHERE PackageNumber = ?';
+  const query = 'DELETE FROM packages WHERE PackageNumber = ?';
 
   db.query(query, [id], (err, result) => {
     if (err) {

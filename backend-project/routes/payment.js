@@ -7,10 +7,10 @@ router.get('/', (req, res) => {
   const query = `
     SELECT p.PaymentNumber, p.AmountPaid, p.PaymentDate, p.RecordNumber,
            sp.ServiceDate, c.PlateNumber, c.DriverName, pkg.PackageName, pkg.PackagePrice
-    FROM Payment p
-    JOIN ServicePackage sp ON p.RecordNumber = sp.RecordNumber
-    JOIN Car c ON sp.PlateNumber = c.PlateNumber
-    JOIN Package pkg ON sp.PackageNumber = pkg.PackageNumber
+    FROM payments p
+    JOIN servicePackages sp ON p.RecordNumber = sp.RecordNumber
+    JOIN cars c ON sp.PlateNumber = c.PlateNumber
+    JOIN packages pkg ON sp.PackageNumber = pkg.PackageNumber
   `;
 
   db.query(query, (err, results) => {
@@ -29,10 +29,10 @@ router.get('/:id', (req, res) => {
   const query = `
     SELECT p.PaymentNumber, p.AmountPaid, p.PaymentDate, p.RecordNumber,
            sp.ServiceDate, c.PlateNumber, c.DriverName, pkg.PackageName, pkg.PackagePrice
-    FROM Payment p
-    JOIN ServicePackage sp ON p.RecordNumber = sp.RecordNumber
-    JOIN Car c ON sp.PlateNumber = c.PlateNumber
-    JOIN Package pkg ON sp.PackageNumber = pkg.PackageNumber
+    FROM payments p
+    JOIN servicePackages sp ON p.RecordNumber = sp.RecordNumber
+    JOIN cars c ON sp.PlateNumber = c.PlateNumber
+    JOIN packages pkg ON sp.PackageNumber = pkg.PackageNumber
     WHERE p.PaymentNumber = ?
   `;
 
@@ -58,7 +58,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'INSERT INTO Payment (AmountPaid, PaymentDate, RecordNumber) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO payments (AmountPaid, PaymentDate, RecordNumber) VALUES (?, ?, ?)';
 
   db.query(query, [amountPaid, paymentDate, recordNumber], (err, result) => {
     if (err) {
@@ -86,10 +86,10 @@ router.get('/bill/:recordNumber', (req, res) => {
            pkg.PackageName, pkg.PackageDescription, pkg.PackagePrice,
            sp.ServiceDate, sp.RecordNumber,
            p.PaymentNumber, p.AmountPaid, p.PaymentDate
-    FROM ServicePackage sp
-    JOIN Car c ON sp.PlateNumber = c.PlateNumber
-    JOIN Package pkg ON sp.PackageNumber = pkg.PackageNumber
-    LEFT JOIN Payment p ON sp.RecordNumber = p.RecordNumber
+    FROM servicePackages sp
+    JOIN cars c ON sp.PlateNumber = c.PlateNumber
+    JOIN packages pkg ON sp.PackageNumber = pkg.PackageNumber
+    LEFT JOIN payments p ON sp.RecordNumber = p.RecordNumber
     WHERE sp.RecordNumber = ?
   `;
 
