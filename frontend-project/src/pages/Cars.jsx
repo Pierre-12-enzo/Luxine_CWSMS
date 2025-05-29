@@ -15,6 +15,7 @@ const Cars = () => {
     phoneNumber: ''
   })
   const [isEditing, setIsEditing] = useState(false)
+  const [plateError, setPlateError] = useState('')
   const { success, error } = useNotification()
 
   // Fetch all cars
@@ -38,6 +39,20 @@ const Cars = () => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
+
+    // Real-time validation for plate number
+    if (name === 'plateNumber' && !isEditing) {
+      if (value && checkDuplicatePlate(value)) {
+        setPlateError('Car with this plate number already exists')
+      } else {
+        setPlateError('')
+      }
+    }
+  }
+
+  // Check for duplicate plate number
+  const checkDuplicatePlate = (plateNumber) => {
+    return cars.some(car => car.PlateNumber.toLowerCase() === plateNumber.toLowerCase())
   }
 
   // Handle form submission
@@ -49,6 +64,12 @@ const Cars = () => {
         await axios.put(`/cars/${formData.plateNumber}`, formData)
         success('Car updated successfully')
       } else {
+        // Check for duplicate plate number before submitting
+        if (checkDuplicatePlate(formData.plateNumber)) {
+          error('Car with this plate number already exists')
+          return
+        }
+
         await axios.post('/cars', formData)
         success('Car added successfully')
       }
@@ -72,6 +93,7 @@ const Cars = () => {
       phoneNumber: ''
     })
     setIsEditing(false)
+    setPlateError('')
     setShowForm(false)
   }
 
@@ -85,6 +107,7 @@ const Cars = () => {
       phoneNumber: car.PhoneNumber
     })
     setIsEditing(true)
+    setPlateError('')
     setShowForm(true)
   }
 
@@ -126,9 +149,16 @@ const Cars = () => {
                   onChange={handleChange}
                   disabled={isEditing}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                    plateError
+                      ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                      : 'border-slate-300 focus:ring-blue-500 focus:border-blue-500'
+                  }`}
                   placeholder="e.g., RAA123A"
                 />
+                {plateError && (
+                  <p className="mt-1 text-sm text-red-600">{plateError}</p>
+                )}
               </div>
 
               <div>
@@ -205,7 +235,12 @@ const Cars = () => {
               </button>
               <button
                 type="submit"
-                className="px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-lg transition-all duration-200 font-medium"
+                disabled={plateError}
+                className={`px-6 py-3 text-white rounded-lg shadow-lg transition-all duration-200 font-medium ${
+                  plateError
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
+                }`}
               >
                 {isEditing ? 'Update Car' : 'Add Car'}
               </button>
@@ -250,6 +285,9 @@ const Cars = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Phone
                   </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -268,7 +306,14 @@ const Cars = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-gray-900">{car.PhoneNumber}</div>
                     </td>
-                    
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => handleEdit(car)}
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md transition-all duration-200"
+                      >
+                        Edit
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

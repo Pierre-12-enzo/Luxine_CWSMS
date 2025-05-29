@@ -43,23 +43,42 @@ router.post('/', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const query = 'INSERT INTO cars (PlateNumber, CarType, CarSize, DriverName, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
+  // First check if plate number already exists
+  const checkQuery = 'SELECT PlateNumber FROM cars WHERE PlateNumber = ?';
 
-  db.query(query, [plateNumber, carType, carSize, driverName, phoneNumber], (err, result) => {
+  db.query(checkQuery, [plateNumber], (err, results) => {
     if (err) {
-      console.error('Error adding car:', err);
+      console.error('Error checking for duplicate plate number:', err);
       return res.status(500).json({ message: 'Server error' });
     }
 
-    res.status(201).json({
-      message: 'Car added successfully',
-      car: {
-        plateNumber,
-        carType,
-        carSize,
-        driverName,
-        phoneNumber
+    if (results.length > 0) {
+      return res.status(409).json({ message: 'Car with this plate number already exists' });
+    }
+
+    // If no duplicate found, proceed with insertion
+    const insertQuery = 'INSERT INTO cars (PlateNumber, CarType, CarSize, DriverName, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
+
+    db.query(insertQuery, [plateNumber, carType, carSize, driverName, phoneNumber], (err, result) => {
+      if (err) {
+        console.error('Error adding car:', err);
+        // Check if it's a duplicate key error (in case of race condition)
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(409).json({ message: 'Car with this plate number already exists' });
+        }
+        return res.status(500).json({ message: 'Server error' });
       }
+
+      res.status(201).json({
+        message: 'Car added successfully',
+        car: {
+          plateNumber,
+          carType,
+          carSize,
+          driverName,
+          phoneNumber
+        }
+      });
     });
   });
 });

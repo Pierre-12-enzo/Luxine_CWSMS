@@ -39,20 +39,28 @@ const SimpleMessage = ({ message, onClose }) => {
   const getMessageStyle = () => {
     switch (message.type) {
       case 'success':
-        return 'bg-emerald-600 text-white border-2 border-emerald-700'
+        return 'bg-emerald-600 text-white'
       case 'error':
-        return 'bg-red-600 text-white border-2 border-red-700'
+        return 'bg-red-600 text-white'
       case 'warning':
-        return 'bg-amber-600 text-white border-2 border-amber-700'
+        return 'bg-amber-600 text-white'
       default:
-        return 'bg-blue-600 text-white border-2 border-blue-700'
+        return 'bg-blue-600 text-white'
     }
   }
 
   return (
     <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-4/5 max-w-2xl">
-      <div className={`p-4 rounded-lg ${getMessageStyle()} shadow-lg text-center`}>
-        <p className="text-base font-medium">{message.text}</p>
+      <div className={`p-4 rounded-lg ${getMessageStyle()} shadow-lg`}>
+        <div className="flex items-center justify-between">
+          <p className="text-base font-medium flex-1">{message.text}</p>
+          <button
+            onClick={onClose}
+            className="ml-4 text-white hover:text-gray-200 text-xl font-bold transition-colors"
+          >
+            ×
+          </button>
+        </div>
       </div>
     </div>
   )
