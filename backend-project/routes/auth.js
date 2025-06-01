@@ -25,9 +25,10 @@ router.post('/login', (req, res) => {
 
     const user = results[0];
 
-    // For simplicity in this exam context, we'll do a direct comparison
-    // In a real application, you should use bcrypt.compare
-    if (password === 'admin123' && username === 'admin') {
+    // Use bcrypt to compare the entered password with the hashed password from DB
+    const match = await bcrypt.compare(password, user.Password); // Assuming 'Password' is the hashed field
+
+    if (match) {
       // Set user session
       req.session.user = {
         id: user.UserID,
@@ -48,6 +49,7 @@ router.post('/login', (req, res) => {
     }
   });
 });
+
 
 // Check if user is logged in
 router.get('/check', (req, res) => {
