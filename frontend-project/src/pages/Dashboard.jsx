@@ -31,25 +31,37 @@ const Dashboard = () => {
       title: 'Total Cars',
       value: summary.carCount,
       link: '/cars',
-      color: 'bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500'
+      icon: '🚗',
+      color: 'from-blue-500/20 to-blue-600/20',
+      borderColor: 'border-blue-500/30',
+      textColor: 'text-blue-400'
     },
     {
       title: 'Service Packages',
       value: summary.packageCount,
       link: '/packages',
-      color: 'bg-gradient-to-br from-emerald-50 to-emerald-100 border-l-4 border-emerald-500'
+      icon: '📦',
+      color: 'from-emerald-500/20 to-emerald-600/20',
+      borderColor: 'border-emerald-500/30',
+      textColor: 'text-emerald-400'
     },
     {
       title: 'Service Records',
       value: summary.serviceCount,
       link: '/services',
-      color: 'bg-gradient-to-br from-amber-50 to-amber-100 border-l-4 border-amber-500'
+      icon: '🔧',
+      color: 'from-amber-500/20 to-amber-600/20',
+      borderColor: 'border-amber-500/30',
+      textColor: 'text-amber-400'
     },
     {
       title: 'Total Revenue',
       value: `${summary.totalRevenue?.toLocaleString() || 0} RWF`,
       link: '/payments',
-      color: 'bg-gradient-to-br from-purple-50 to-purple-100 border-l-4 border-purple-500'
+      icon: '💰',
+      color: 'from-primary-500/20 to-primary-600/20',
+      borderColor: 'border-primary-500/30',
+      textColor: 'text-primary-400'
     }
   ]
 
@@ -62,49 +74,78 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-slate-800">Dashboard</h1>
-        <p className="mt-2 text-slate-600 text-lg">Welcome to SmartPark Car Washing Sales Management System</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
+        <p className="text-purple-300 text-lg">Welcome to SmartPark Car Washing Sales Management System</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card, index) => (
           <Link
             key={index}
             to={card.link}
-            className={`p-6 rounded-xl shadow-lg border border-slate-200 ${card.color} hover:shadow-xl hover:scale-105 transition-all duration-200`}
+            className="group p-6 bg-gray-800 rounded-lg border border-purple-600 hover:bg-gray-700 transition-all duration-200"
           >
-            <div>
-              <h2 className="text-lg font-semibold text-slate-700">{card.title}</h2>
-              <p className="mt-3 text-3xl font-bold text-slate-800">{card.value}</p>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-2xl">{card.icon}</span>
+              <div className={`w-2 h-2 ${card.textColor.replace('text-', 'bg-')} rounded-full`}></div>
             </div>
+            <h3 className="text-purple-200 text-sm font-medium mb-2">{card.title}</h3>
+            <p className={`text-3xl font-bold ${card.textColor}`}>{card.value}</p>
           </Link>
         ))}
       </div>
 
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold text-slate-800 mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Quick Actions */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-purple-400 text-center">Quick Actions</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link
             to="/cars"
-            className="flex items-center p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border border-blue-200"
+            className="p-6 bg-gray-800 rounded-lg border border-purple-600 hover:bg-gray-700 transition-all duration-200"
           >
-            <span className="font-semibold text-blue-700 text-lg">Register New Car</span>
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">🚗</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-lg">Register New Car</h3>
+                <p className="text-purple-300 text-sm">Add a new vehicle to the system</p>
+              </div>
+            </div>
           </Link>
 
           <Link
             to="/services"
-            className="flex items-center p-6 bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border border-amber-200"
+            className="p-6 bg-gray-800 rounded-lg border border-purple-600 hover:bg-gray-700 transition-all duration-200"
           >
-            <span className="font-semibold text-amber-700 text-lg">Create Service Record</span>
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-amber-600 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">🔧</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-lg">Create Service Record</h3>
+                <p className="text-purple-300 text-sm">Log a new service session</p>
+              </div>
+            </div>
           </Link>
 
           <Link
             to="/payments"
-            className="flex items-center p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border border-purple-200"
+            className="p-6 bg-gray-800 rounded-lg border border-purple-600 hover:bg-gray-700 transition-all duration-200"
           >
-            <span className="font-semibold text-purple-700 text-lg">Record Payment</span>
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">💳</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-lg">Record Payment</h3>
+                <p className="text-purple-300 text-sm">Process customer payment</p>
+              </div>
+            </div>
           </Link>
         </div>
       </div>

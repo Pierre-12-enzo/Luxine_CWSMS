@@ -65,6 +65,62 @@ router.get('/check', (req, res) => {
   }
 });
 
+// Registration route
+router.post('/register', async (req, res) => {
+  const { username, password, fullName } = req.body;
+
+  if (!username || !password || !fullName) {
+    return res.status(400).json({ message: 'Username, password, and full name are required' });
+  }
+
+  // Validate password length
+  if (password.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+  }
+
+  try {
+    // Check if username already exists
+    const checkQuery = 'SELECT * FROM Users WHERE Username = ?';
+
+    db.query(checkQuery, [username], async (err, results) => {
+      if (err) {
+        console.error('Registration error:', err);
+        return res.status(500).json({ message: 'Server error' });
+      }
+
+      if (results.length > 0) {
+        return res.status(409).json({ message: 'Username already exists' });
+      }
+
+      // Hash the password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      // Insert new user
+      const insertQuery = 'INSERT INTO Users (Username, Password, FullName) VALUES (?, ?, ?)';
+
+      db.query(insertQuery, [username, hashedPassword, fullName], (err, result) => {
+        if (err) {
+          console.error('Error creating user:', err);
+          return res.status(500).json({ message: 'Server error' });
+        }
+
+        res.status(201).json({
+          message: 'User registered successfully',
+          user: {
+            id: result.insertId,
+            username: username,
+            fullName: fullName
+          }
+        });
+      });
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Logout route
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {

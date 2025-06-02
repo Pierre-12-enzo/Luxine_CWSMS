@@ -336,45 +336,45 @@ const Reports = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-purple-600">
+              <thead className="bg-gray-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Plate Number
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Package
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Description
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Payment Date
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Amount Paid
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-gray-700 divide-y divide-purple-600">
                 {filteredPayments.map((payment, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
+                  <tr key={index} className="hover:bg-gray-600">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{payment.PlateNumber}</div>
+                      <div className="text-white">{payment.PlateNumber}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{payment.PackageName}</div>
+                      <div className="text-white">{payment.PackageName}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-gray-900">{payment.PackageDescription}</div>
+                      <div className="text-white">{payment.PackageDescription}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">
+                      <div className="text-white">
                         {new Date(payment.PaymentDate).toLocaleDateString()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <div className="text-gray-900">{payment.AmountPaid?.toLocaleString()} RWF</div>
+                      <div className="text-white">{payment.AmountPaid?.toLocaleString()} RWF</div>
                     </td>
                   </tr>
                 ))}

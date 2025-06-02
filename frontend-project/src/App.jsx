@@ -5,6 +5,7 @@ import axios from 'axios'
 // Components
 import Layout from './components/Layout'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Cars from './pages/Cars'
 import Packages from './pages/Packages'
@@ -55,6 +56,10 @@ const App = () => {
     <Routes>
       <Route path="/login" element={
         user ? <Navigate to="/" /> : <Login setUser={setUser} />
+      } />
+
+      <Route path="/register" element={
+        user ? <Navigate to="/" /> : <Register />
       } />
 
       <Route path="/" element={

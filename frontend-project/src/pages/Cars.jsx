@@ -55,9 +55,64 @@ const Cars = () => {
     return cars.some(car => car.PlateNumber.toLowerCase() === plateNumber.toLowerCase())
   }
 
+  // Validate form data
+  const validateForm = () => {
+    // Check if all fields are filled
+    if (!formData.plateNumber || !formData.carType || !formData.carSize || !formData.driverName || !formData.phoneNumber) {
+      error('All fields are required')
+      return false
+    }
+
+    // Validate plate number format (letters and numbers only, 6-8 characters)
+    const plateRegex = /^[A-Za-z0-9]{6,8}$/
+    if (!plateRegex.test(formData.plateNumber)) {
+      error('Plate number must be 6-8 characters long and contain only letters and numbers')
+      return false
+    }
+
+    // Validate driver name (letters and spaces only)
+    const nameRegex = /^[a-zA-Z\s]+$/
+    if (!nameRegex.test(formData.driverName.trim())) {
+      error('Driver name must contain only letters and spaces')
+      return false
+    }
+
+    if (formData.driverName.trim().length < 2) {
+      error('Driver name must be at least 2 characters long')
+      return false
+    }
+
+    // Validate phone number (digits only, 10-15 characters)
+    const phoneRegex = /^[0-9]{10,15}$/
+    if (!phoneRegex.test(formData.phoneNumber)) {
+      error('Phone number must be 10-15 digits long and contain only numbers')
+      return false
+    }
+
+    // Validate car type (letters and spaces only)
+    if (!nameRegex.test(formData.carType.trim())) {
+      error('Car type must contain only letters and spaces')
+      return false
+    }
+
+    // Validate car size
+    const validSizes = ['Small', 'Medium', 'Large']
+    if (!validSizes.includes(formData.carSize)) {
+      error('Please select a valid car size')
+      return false
+    }
+
+    return true
+  }
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Validate form
+    if (!validateForm()) {
+      return
+    }
 
     try {
       if (isEditing) {
@@ -286,38 +341,38 @@ const Cars = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-purple-600">
+              <thead className="bg-gray-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Plate Number
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Car Details
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Driver
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Phone
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-gray-700 divide-y divide-purple-600">
                 {filteredCars.map((car) => (
-                  <tr key={car.PlateNumber} className="hover:bg-gray-50">
+                  <tr key={car.PlateNumber} className="hover:bg-gray-600">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{car.PlateNumber}</div>
+                      <div className="font-medium text-white">{car.PlateNumber}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{car.CarType}</div>
-                      <div className="text-gray-500 text-sm">{car.CarSize}</div>
+                      <div className="text-white">{car.CarType}</div>
+                      <div className="text-purple-300 text-sm">{car.CarSize}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{car.DriverName}</div>
+                      <div className="text-white">{car.DriverName}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{car.PhoneNumber}</div>
+                      <div className="text-white">{car.PhoneNumber}</div>
                     </td>
                   </tr>
                 ))}

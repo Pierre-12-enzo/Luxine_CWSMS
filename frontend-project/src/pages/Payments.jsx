@@ -71,9 +71,62 @@ const Payments = () => {
     }
   }
 
+  // Validate form data
+  const validateForm = () => {
+    // Check if all fields are filled
+    if (!formData.amountPaid || !formData.paymentDate || !formData.recordNumber) {
+      error('All fields are required')
+      return false
+    }
+
+    // Validate amount paid (positive number only)
+    const amount = parseFloat(formData.amountPaid)
+    if (isNaN(amount) || amount <= 0) {
+      error('Amount paid must be a positive number')
+      return false
+    }
+
+    if (amount > 1000000) {
+      error('Amount paid must be less than 1,000,000 RWF')
+      return false
+    }
+
+    // Validate payment date (not in the future)
+    const selectedDate = new Date(formData.paymentDate)
+    const today = new Date()
+    today.setHours(23, 59, 59, 999) // Set to end of today
+
+    if (selectedDate > today) {
+      error('Payment date cannot be in the future')
+      return false
+    }
+
+    // Validate that the date is not too old (e.g., more than 1 year ago)
+    const oneYearAgo = new Date()
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+    if (selectedDate < oneYearAgo) {
+      error('Payment date cannot be more than 1 year ago')
+      return false
+    }
+
+    // Validate that record number exists in unpaid services
+    if (!unpaidServices.some(service => service.RecordNumber.toString() === formData.recordNumber)) {
+      error('Selected service record does not exist or is already paid')
+      return false
+    }
+
+    return true
+  }
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Validate form
+    if (!validateForm()) {
+      return
+    }
 
     try {
       const response = await axios.post('/payments', formData)
@@ -562,61 +615,61 @@ const Payments = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-purple-600">
+              <thead className="bg-gray-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Payment #
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Car
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Driver
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Package
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-gray-700 divide-y divide-purple-600">
                 {filteredPayments.map((payment) => (
-                  <tr key={payment.PaymentNumber} className="hover:bg-gray-50">
+                  <tr key={payment.PaymentNumber} className="hover:bg-gray-600">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{payment.PaymentNumber}</div>
+                      <div className="text-white">{payment.PaymentNumber}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">
+                      <div className="text-white">
                         {new Date(payment.PaymentDate).toLocaleDateString()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{payment.PlateNumber}</div>
+                      <div className="font-medium text-white">{payment.PlateNumber}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{payment.DriverName}</div>
+                      <div className="text-white">{payment.DriverName}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{payment.PackageName}</div>
+                      <div className="text-white">{payment.PackageName}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{payment.AmountPaid?.toLocaleString()} RWF</div>
+                      <div className="text-white">{payment.AmountPaid?.toLocaleString()} RWF</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
 
                         <button
                           onClick={() => handleQuickPrint(payment.RecordNumber)}
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium shadow-md transition-all duration-200"
+                          className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                         >
                           Print Bill
                         </button>

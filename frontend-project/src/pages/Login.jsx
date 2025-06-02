@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
 
 const Login = ({ setUser }) => {
@@ -29,56 +29,81 @@ const Login = ({ setUser }) => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-100 to-blue-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-2xl border border-slate-200">
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">SmartPark</h1>
-          <p className="mt-2 text-slate-600 font-medium">Car Washing Sales Management System</p>
-        </div>
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-slate-700">
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="block w-full px-4 py-3 mt-1 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              placeholder="Enter your username"
-            />
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl border border-purple-600">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <span className="text-white font-bold text-2xl">SP</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-purple-400">SmartPark</h1>
+            <p className="mt-2 text-purple-300 font-medium">Car Washing Sales Management System</p>
+            <h2 className="mt-4 text-xl font-bold text-white">Welcome Back</h2>
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-700">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="block w-full px-4 py-3 mt-1 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              placeholder="Enter your password"
-            />
-          </div>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-purple-200 mb-2">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="block w-full px-4 py-3 bg-gray-700 border border-purple-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                  placeholder="Enter your username"
+                />
+              </div>
 
-          <div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-purple-200 mb-2">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="block w-full px-4 py-3 bg-gray-700 border border-purple-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                  placeholder="Enter your password"
+                />
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-transparent rounded-lg shadow-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50"
+              className="w-full flex justify-center items-center py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? (
+                <div className="flex items-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Logging in...
+                </div>
+              ) : (
+                'Sign In'
+              )}
             </button>
-          </div>
-        </form>
+
+            <div className="text-center pt-4">
+              <p className="text-sm text-purple-300">
+                Don't have an account?{' '}
+                <Link
+                  to="/register"
+                  className="font-medium text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Create one here
+                </Link>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   )

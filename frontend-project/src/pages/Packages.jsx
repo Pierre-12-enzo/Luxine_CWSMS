@@ -37,9 +37,60 @@ const Packages = () => {
     setFormData({ ...formData, [name]: value })
   }
 
+  // Validate form data
+  const validateForm = () => {
+    // Check if all fields are filled
+    if (!formData.packageName || !formData.packageDescription || !formData.packagePrice) {
+      error('All fields are required')
+      return false
+    }
+
+    // Validate package name (letters, numbers, and spaces only)
+    const nameRegex = /^[a-zA-Z0-9\s]+$/
+    if (!nameRegex.test(formData.packageName.trim())) {
+      error('Package name must contain only letters, numbers, and spaces')
+      return false
+    }
+
+    if (formData.packageName.trim().length < 2) {
+      error('Package name must be at least 2 characters long')
+      return false
+    }
+
+    // Validate description length
+    if (formData.packageDescription.trim().length < 10) {
+      error('Package description must be at least 10 characters long')
+      return false
+    }
+
+    if (formData.packageDescription.trim().length > 500) {
+      error('Package description must be less than 500 characters long')
+      return false
+    }
+
+    // Validate price (positive number only)
+    const price = parseFloat(formData.packagePrice)
+    if (isNaN(price) || price <= 0) {
+      error('Package price must be a positive number')
+      return false
+    }
+
+    if (price > 1000000) {
+      error('Package price must be less than 1,000,000 RWF')
+      return false
+    }
+
+    return true
+  }
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Validate form
+    if (!validateForm()) {
+      return
+    }
 
     try {
       await axios.post('/packages', formData)
@@ -177,43 +228,43 @@ const Packages = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-purple-600">
+              <thead className="bg-gray-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Package ID
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Description
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Price (RWF)
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-gray-700 divide-y divide-purple-600">
                 {filteredPackages.map((pkg) => (
-                  <tr key={pkg.PackageNumber} className="hover:bg-gray-50">
+                  <tr key={pkg.PackageNumber} className="hover:bg-gray-600">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{pkg.PackageNumber}</div>
+                      <div className="text-white">{pkg.PackageNumber}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{pkg.PackageName}</div>
+                      <div className="font-medium text-white">{pkg.PackageName}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-gray-900">{pkg.PackageDescription}</div>
+                      <div className="text-white">{pkg.PackageDescription}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{pkg.PackagePrice.toLocaleString()} RWF</div>
+                      <div className="text-white">{pkg.PackagePrice.toLocaleString()} RWF</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <span className="text-slate-500 text-sm">View Only</span>
+                      <span className="text-purple-300 text-sm">View Only</span>
                     </td>
                   </tr>
                 ))}

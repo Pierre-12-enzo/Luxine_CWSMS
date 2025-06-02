@@ -48,9 +48,56 @@ const ServiceRecords = () => {
     setFormData({ ...formData, [name]: value })
   }
 
+  // Validate form data
+  const validateForm = () => {
+    // Check if all fields are filled
+    if (!formData.serviceDate || !formData.plateNumber || !formData.packageNumber) {
+      error('All fields are required')
+      return false
+    }
+
+    // Validate service date (not in the future)
+    const selectedDate = new Date(formData.serviceDate)
+    const today = new Date()
+    today.setHours(23, 59, 59, 999) // Set to end of today
+
+    if (selectedDate > today) {
+      error('Service date cannot be in the future')
+      return false
+    }
+
+    // Validate that the date is not too old (e.g., more than 1 year ago)
+    const oneYearAgo = new Date()
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+    if (selectedDate < oneYearAgo) {
+      error('Service date cannot be more than 1 year ago')
+      return false
+    }
+
+    // Validate that plate number exists in cars
+    if (!cars.some(car => car.PlateNumber === formData.plateNumber)) {
+      error('Selected car does not exist')
+      return false
+    }
+
+    // Validate that package exists
+    if (!packages.some(pkg => pkg.PackageNumber.toString() === formData.packageNumber)) {
+      error('Selected package does not exist')
+      return false
+    }
+
+    return true
+  }
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Validate form
+    if (!validateForm()) {
+      return
+    }
 
     try {
       if (isEditing) {
@@ -234,67 +281,67 @@ const ServiceRecords = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-purple-600">
+              <thead className="bg-gray-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Record #
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Car
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Driver
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Package
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Price
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-purple-200 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-gray-700 divide-y divide-purple-600">
                 {filteredServices.map((service) => (
-                  <tr key={service.RecordNumber} className="hover:bg-gray-50">
+                  <tr key={service.RecordNumber} className="hover:bg-gray-600">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{service.RecordNumber}</div>
+                      <div className="text-white">{service.RecordNumber}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">
+                      <div className="text-white">
                         {new Date(service.ServiceDate).toLocaleDateString()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{service.PlateNumber}</div>
-                      <div className="text-gray-500 text-sm">{service.CarType}, {service.CarSize}</div>
+                      <div className="font-medium text-white">{service.PlateNumber}</div>
+                      <div className="text-purple-300 text-sm">{service.CarType}, {service.CarSize}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{service.DriverName}</div>
+                      <div className="text-white">{service.DriverName}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{service.PackageName}</div>
-                      <div className="text-gray-500 text-sm">{service.PackageDescription}</div>
+                      <div className="text-white">{service.PackageName}</div>
+                      <div className="text-purple-300 text-sm">{service.PackageDescription}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-900">{service.PackagePrice.toLocaleString()} RWF</div>
+                      <div className="text-white">{service.PackagePrice.toLocaleString()} RWF</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
                         onClick={() => handleEdit(service)}
-                        className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm mr-2 font-medium shadow-md transition-all duration-200"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm mr-2 font-medium transition-all duration-200"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(service.RecordNumber)}
-                        className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md transition-all duration-200"
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                       >
                         Delete
                       </button>
